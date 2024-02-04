@@ -106,7 +106,7 @@ def delete_event(event_id):
     event = db.session.execute(db.select(Event).filter_by(id=event_id)).scalar_one()
     db.session.delete(event)
     db.session.commit()
-    return {"message": f"Event {event_id} deleted"}
+    return {"message": f"Event {event_id} deleted."}
 
 
 @app.delete('/regions/<noc_code>')
@@ -119,14 +119,15 @@ def delete_region(noc_code):
     region = db.session.execute(db.select(Region).filter_by(NOC=noc_code)).scalar_one()
     db.session.delete(region)
     db.session.commit()
-    return {"message": f"Region {noc_code} deleted"}
+    return {"message": f"Region {noc_code} deleted."}
 
 
 @app.patch("/events/<event_id>")
 def event_update(event_id):
-    """
-    Updates changed fields for the event.
-
+    """ Updates changed fields for the specified event.
+    
+    Returns:
+        JSON message
     """
     # Find the event in the database
     existing_event = db.session.execute(
@@ -135,17 +136,12 @@ def event_update(event_id):
     # Get the updated details from the json sent in the HTTP patch request
     event_json = request.get_json()
     # Use Marshmallow to update the existing records with the changes from the json
-    event_updated = event_schema.load(event_json, instance=existing_event, partial=True)
+    event_update = event_schema.load(event_json, instance=existing_event, partial=True)
     # Commit the changes to the database
-    db.session.add(event_updated)
+    db.session.add(event_update)
     db.session.commit()
-    # Return json showing the updated record
-    updated_event = db.session.execute(
-        db.select(Event).filter_by(event_id=event_id)
-    ).scalar_one_or_none()
-    result = event_schema.jsonify(updated_event)
-    response = make_response(result, 200)
-    response.headers["Content-Type"] = "application/json"
+    # Return json success message
+    response = {"message": f"Event with id={event_id} updated."}
     return response
 
 
@@ -198,7 +194,7 @@ def region_update(noc_code):
     db.session.add(r)
     db.session.commit()
 
-    return {"message": f"Region {noc_code} updated"}
+    return {"message": f"Region {noc_code} updated."}
 
 
 # fix the SQLAlchemy.exc.NotFound error

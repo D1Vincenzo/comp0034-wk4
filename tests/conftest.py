@@ -2,6 +2,7 @@ import os
 from pathlib import Path
 import pytest
 from paralympics import create_app
+from paralympics.schemas import RegionSchema
 
 
 @pytest.fixture(scope='module')
@@ -38,18 +39,21 @@ from paralympics import db
 from paralympics.models import Region
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture()
 def new_region(app):
     """Create a new region and add to the database.
 
-    Adds a new Region to the database and also returns an instance of that Region object.
+    Adds a new Region to the database and also returns the JSON for a new region.
     """
-    new_region = Region(NOC='NEW', notes=None, region='A new region')
+    new_region_json = {'NOC': 'NEW', 'notes': None, 'region': 'A new region'}
+
     with app.app_context():
+        region_schema = RegionSchema()
+        new_region = region_schema.load(new_region_json)
         db.session.add(new_region)
         db.session.commit()
 
-    yield new_region
+    yield new_region_json
 
     # Remove the region from the database at the end of the test if it still exists
     with app.app_context():

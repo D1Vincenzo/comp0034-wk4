@@ -117,32 +117,31 @@ def test_region_post_error(client):
     assert response.status_code == 400
     
 
-# will update in week 5
-# def test_patch_region(client, new_region):
-#     """
-#         GIVEN an existing region
-#         AND a Flask test client
-#         WHEN an UPDATE request is made to /regions/<noc-code> with notes json
-#         THEN the response status code should be 200
-#         AND the response content should include the message 'Region <NOC_code> updated'
-#     """
-#     new_region_notes = {'notes': 'An updated note'}
-#     code = new_region['NOC']
-#     response = client.patch(f"/regions/{code}", json=new_region_notes)
-#     assert response.json['message'] == 'Region NEW updated.'
-#     assert response.status_code == 200
+def test_patch_region(client, new_region):
+    """
+        GIVEN an existing region
+        AND a Flask test client
+        WHEN an UPDATE request is made to /regions/<noc-code> with notes json
+        THEN the response status code should be 200
+        AND the response content should include the message 'Region <NOC_code> updated'
+    """
+    new_region_notes = {'notes': 'An updated note'}
+    code = new_region['NOC']
+    response = client.patch(f"/regions/{code}", json=new_region_notes)
+    assert response.json['message'] == 'Region NEW updated.'
+    assert response.status_code == 200
 
 
-# def test_delete_region(client, new_region):
-#     """
-#     GIVEN an existing region in JSON format
-#     AND a Flask test client
-#     WHEN a DELETE request is made to /regions/<noc-code>
-#     THEN the response status code should be 200
-#     AND the response content should include the message 'Region {noc_code} deleted.'
-#     """
-#     # Get the NOC code from the JSON which is returned in the new_region fixture
-#     code = new_region['NOC']
-#     response = client.delete(f"/regions/{code}")
-#     assert response.status_code == 200
-#     assert response.json['message'] == 'Region NEW deleted.'
+def test_delete_region(client, new_region):
+    """
+    GIVEN an existing region in JSON format
+    AND a Flask test client
+    WHEN a DELETE request is made to /regions/<noc-code>
+    THEN the response status code should be 200
+    AND the response content should include the message 'Region {noc_code} deleted.'
+    """
+    # Get the NOC code from the JSON which is returned in the new_region fixture
+    code = new_region['NOC']
+    response = client.delete(f"/regions/{code}")
+    assert response.status_code == 200
+    assert response.json['message'] == 'Region NEW deleted.'
