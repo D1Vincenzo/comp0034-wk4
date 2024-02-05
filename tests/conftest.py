@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 from paralympics import create_app
 from paralympics.schemas import RegionSchema
+import time
 
 
 @pytest.fixture(scope='module')
@@ -27,8 +28,12 @@ def app():
 
     # clean up / reset resources
     # Delete the test database
-    os.unlink(db_path)
-
+    for _ in range(5):
+        try:
+            os.unlink(db_path)
+            break
+        except PermissionError:
+            time.sleep(1)
 
 @pytest.fixture()
 def client(app):
